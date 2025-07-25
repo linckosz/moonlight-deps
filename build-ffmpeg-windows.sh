@@ -1,4 +1,17 @@
-GENERIC_BUILD_ARGS="--enable-pic --enable-shared --disable-static --disable-all --enable-avcodec --enable-avformat --enable-swscale --enable-decoder=h264 --enable-decoder=hevc --enable-decoder=av1 --enable-hwaccel=h264_dxva2 --enable-hwaccel=hevc_dxva2 --enable-hwaccel=av1_dxva2 --enable-hwaccel=h264_d3d11va --enable-hwaccel=hevc_d3d11va --enable-hwaccel=av1_d3d11va --enable-hwaccel=h264_d3d11va2 --enable-hwaccel=hevc_d3d11va2 --enable-hwaccel=av1_d3d11va2 --enable-libdav1d --enable-decoder=libdav1d --extra-cflags=-I$VULKAN_SDK\Include --enable-hwaccel=h264_vulkan --enable-hwaccel=hevc_vulkan --enable-hwaccel=av1_vulkan --enable-amf --enable-encoder=h264_amf --enable-encoder=hevc_amf --enable-cuda --enable-nvdec --enable-encoder=h264_nvenc --enable-encoder=hevc_nvenc --enable-encoder=av1_nvenc --enable-libmfx --enable-qsv --enable-encoder=h264_qsv --enable-encoder=hevc_qsv --enable-encoder=av1_qsv"
+pacman --noconfirm -S unzip
+
+echo "Setting up AMD AMF SDK..."
+AMF_VERSION="master"
+AMF_URL="https://github.com/GPUOpen-LibrariesAndSDKs/AMF/archive/refs/heads/master.zip"
+
+if [ ! -d "AMF-master" ]; then
+    wget $AMF_URL -O amf.zip
+    unzip amf.zip
+fi
+
+export AMF_ROOT="$(pwd)/AMF-master"
+
+GENERIC_BUILD_ARGS="--enable-pic --enable-shared --disable-static --disable-all --enable-avcodec --enable-avformat --enable-swscale --enable-decoder=h264 --enable-decoder=hevc --enable-decoder=av1 --enable-hwaccel=h264_dxva2 --enable-hwaccel=hevc_dxva2 --enable-hwaccel=av1_dxva2 --enable-hwaccel=h264_d3d11va --enable-hwaccel=hevc_d3d11va --enable-hwaccel=av1_d3d11va --enable-hwaccel=h264_d3d11va2 --enable-hwaccel=hevc_d3d11va2 --enable-hwaccel=av1_d3d11va2 --enable-libdav1d --enable-decoder=libdav1d --extra-cflags=-I$VULKAN_SDK\Include --enable-hwaccel=h264_vulkan --enable-hwaccel=hevc_vulkan --enable-hwaccel=av1_vulkan --enable-amf --enable-encoder=h264_amf --enable-encoder=hevc_amf --extra-cflags=\"-I$AMF_ROOT/amf/public/include\""
 
 # Our MSYS command drops us in a random folder. Reorient ourselves based on this script directory.
 SCRIPT=$(readlink -f $0)
