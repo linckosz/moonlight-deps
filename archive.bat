@@ -1,6 +1,5 @@
 mkdir output
 mkdir output\include
-mkdir output\include\AMF
 mkdir output\lib
 
 xcopy /e Vulkan-Headers\include output\include
