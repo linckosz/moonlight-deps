@@ -21,24 +21,7 @@ jobs:
             ffmpeg_build_tuple: x64
             libplacebo_build_tuple: x64
 
-          # Windows ARM64 Configuration
-          - os: windows-11-arm
-            sdk_version: 10.0.26100.0
-            msvc_compiler_tuple: arm64
-            msbuild_platform: ARM64
-            cmake_build_tuple: arm64 ARM64
-            openssl_build_tuple: arm64 VC-WIN64-ARM
-            ffmpeg_build_tuple: arm64
-            libplacebo_build_tuple: arm64
-
-          # macOS Configuration
-          - os: macos-15
-            macos_min: '13.0'
-
     runs-on: ${{ matrix.os }}
-
-    env:
-      MACOS_MIN: ${{ matrix.macos_min }}
 
     steps:
       - name: Checkout Repository
@@ -46,12 +29,6 @@ jobs:
         with:
           submodules: 'recursive'
           fetch-depth: 1
-
-      - name: Setup Environment (macOS)
-        if: runner.os == 'macOS'
-        run: |
-          export SDKROOT=$(xcrun --sdk macosx --show-sdk-path)
-          brew install nasm meson
 
       - name: Setup Environment (Windows)
         if: runner.os == 'Windows'
@@ -88,69 +65,8 @@ jobs:
         shell: bash
         run: |
           mkdir build
-          mkdir build/SDL
-          mkdir build/SDL_ttf
-          mkdir build/openssl
-          mkdir build/libplacebo
           mkdir build/dav1d
           mkdir build/FFmpeg
-          mkdir build/opus
-          mkdir build/discord-rpc
-
-      - name: Build Detours (Windows)
-        if: runner.os == 'Windows'
-        shell: cmd
-        run: |
-          build-detours.bat ${{ matrix.msbuild_platform }}
-
-      - name: Build SDL (Windows)
-        if: runner.os == 'Windows'
-        shell: cmd
-        working-directory: build/SDL
-        run: |
-          ..\\..\\build-sdl.bat ${{ matrix.cmake_build_tuple }}
-
-      - name: Build SDL (macOS)
-        if: runner.os == 'macos'
-        shell: bash
-        working-directory: build/SDL
-        run: |
-          ../../build-sdl.sh
-
-      - name: Build SDL_ttf (Windows)
-        if: runner.os == 'Windows'
-        shell: cmd
-        working-directory: build/SDL_ttf
-        run: |
-          ..\\..\\build-sdl-ttf.bat ${{ matrix.cmake_build_tuple }}
-
-      - name: Build OpenSSL (Windows)
-        if: runner.os == 'Windows'
-        shell: cmd
-        working-directory: build
-        run: |
-          ..\\build-openssl.bat ${{ matrix.openssl_build_tuple }}
-
-      - name: Build OpenSSL (macOS x86_64)
-        if: runner.os == 'macos'
-        shell: bash
-        working-directory: build
-        run: |
-          ../build-openssl.sh x64 darwin64-x86_64-cc
-
-      - name: Build OpenSSL (macOS arm64)
-        if: runner.os == 'macos'
-        shell: bash
-        working-directory: build
-        run: |
-          ../build-openssl.sh arm64 darwin64-arm64-cc
-
-      - name: Build libplacebo (Windows)
-        if: runner.os == 'Windows'
-        shell: cmd
-        working-directory: libplacebo
-        run: |
-          ..\\build-libplacebo-windows.bat ${{ matrix.libplacebo_build_tuple }}
 
       - name: Build dav1d (Windows)
         if: runner.os == 'Windows'
@@ -173,73 +89,11 @@ jobs:
         run: |
           ../build-ffmpeg-windows.sh ${{ matrix.ffmpeg_build_tuple }}
 
-      - name: Build FFmpeg (macOS x86_64)
-        if: runner.os == 'macos'
-        shell: bash
-        working-directory: build
-        run: |
-          ../build-ffmpeg-macos.sh x64 x86_64
-
-      - name: Build FFmpeg (macOS arm64)
-        if: runner.os == 'macos'
-        shell: bash
-        working-directory: build
-        run: |
-          ../build-ffmpeg-macos.sh arm64 arm64
-
-      - name: Build opus (Windows)
-        if: runner.os == 'Windows'
-        shell: cmd
-        working-directory: build/opus
-        run: |
-          ..\\..\\build-opus.bat ${{ matrix.cmake_build_tuple }}
-
-      - name: Build opus (macOS x86_64)
-        if: runner.os == 'macos'
-        shell: bash
-        working-directory: build/opus
-        run: |
-          ../../build-opus.sh x64 x86_64
-
-      - name: Build opus (macOS arm64)
-        if: runner.os == 'macos'
-        shell: bash
-        working-directory: build/opus
-        run: |
-          ../../build-opus.sh arm64 arm64
-
-      - name: Build discord-rpc (Windows)
-        if: runner.os == 'Windows'
-        shell: cmd
-        working-directory: build/discord-rpc
-        run: |
-          ..\\..\\build-discord-rpc.bat ${{ matrix.cmake_build_tuple }}
-
-      - name: Build discord-rpc (macOS x86_64)
-        if: runner.os == 'macos'
-        shell: bash
-        working-directory: build/discord-rpc
-        run: |
-          ../../build-discord-rpc.sh x64 x86_64
-
-      - name: Build discord-rpc (macOS arm64)
-        if: runner.os == 'macos'
-        shell: bash
-        working-directory: build/discord-rpc
-        run: |
-          ../../build-discord-rpc.sh arm64 arm64
-
       - name: Archive Build Artifacts (Windows)
         if: runner.os == 'Windows'
         shell: cmd
         run: |
           archive.bat ${{ matrix.msbuild_platform }}
-
-      - name: Archive Build Artifacts (macOS)
-        if: runner.os == 'macos'
-        shell: bash
-        run: |
-          ./archive.sh
 
       - name: Upload Artifacts
         uses: actions/upload-artifact@v4
