@@ -4,7 +4,7 @@ mkdir output\include\AMF
 mkdir output\lib
 
 xcopy /e Vulkan-Headers\include output\include
-xcopy /e AMF\public\include output\include\AMF
+xcopy /e AMF\amf\public\include output\include\AMF
 
 mkdir output\include\%1
 mkdir output\lib\%1
