@@ -6,7 +6,7 @@ cd $SCRIPTPATH/FFmpeg
 
 # Copy AMF headers to output
 mkdir -p $SCRIPTPATH/output/include/AMF
-cp -r $SCRIPTPATH/AMF/amf/public/include/* output/include/AMF/
+cp -r $SCRIPTPATH/AMF/amf/public/include/* $SCRIPTPATH/output/include/AMF/
 
 GENERIC_BUILD_ARGS="--enable-pic --fatal-warnings --enable-shared --disable-static --disable-all --disable-autodetect --enable-dxva2 --enable-d3d11va --enable-d3d12va --enable-vulkan --enable-avcodec --enable-avformat --enable-swscale --enable-decoder=h264 --enable-decoder=hevc --enable-decoder=av1 --enable-hwaccel=h264_dxva2 --enable-hwaccel=hevc_dxva2 --enable-hwaccel=av1_dxva2 --enable-hwaccel=h264_d3d11va --enable-hwaccel=hevc_d3d11va --enable-hwaccel=av1_d3d11va --enable-hwaccel=h264_d3d11va2 --enable-hwaccel=hevc_d3d11va2 --enable-hwaccel=av1_d3d11va2 --enable-hwaccel=h264_d3d12va --enable-hwaccel=hevc_d3d12va --extra-cflags=-I$SCRIPTPATH/output/include --enable-amf --enable-hwaccel=av1_d3d12va --enable-libdav1d --enable-decoder=libdav1d --extra-cflags=-I$VULKAN_SDK/Include --enable-hwaccel=h264_vulkan --enable-hwaccel=hevc_vulkan --enable-hwaccel=av1_vulkan"
 
